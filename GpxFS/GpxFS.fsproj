@@ -44,7 +44,11 @@
   <ItemGroup>
     <Compile Include="GpxXmlFunctions.fs" />
     <Compile Include="GpxLoader.fs" />
+    <Compile Include="Geo.fs" />
     <None Include="Script.fsx" />
+    <None Include="20150406.gpx" />
+    <None Include="20150405.gpx" />
+    <None Include="02b - MonteFaie.gpx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">12</MinimumVisualStudioVersion>
