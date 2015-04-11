@@ -1,0 +1,34 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UnGiroInGiro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Maps="using:Windows.UI.Xaml.Controls.Maps"
+    x:Class="UnGiroInGiro.MainPage"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Load Track" Click="LoadTrack_Click"/>
+                <AppBarButton Label="Save Track" Click="SaveTrackButton_Click"/>
+            </CommandBar.SecondaryCommands>
+            <AppBarButton Icon="MapPin"  Label="Position" Click="AddCurrentPosition_Click" />
+            <AppBarButton Name="TrackLocationButton" Icon="Play" Label="Start Track" Click="TrackLocation_Click"/>
+            <AppBarButton Icon="Globe" Name="btnOsmOnline" Label="OSM" Click="btnOsmOnline_Click"/>
+            <AppBarButton Name="btnClearMap" Icon="Refresh"  Label="Clear Map" Click="btnClearMap_Click" />
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="StatusTextBlock" FontSize="18" Text="Status: " Margin="5,4,12,6"/>
+        <Maps:MapControl Grid.Row="1" x:Name="myMap" />
+
+    </Grid>
+</Page>
