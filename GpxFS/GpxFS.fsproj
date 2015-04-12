@@ -49,6 +49,7 @@
     <None Include="20150406.gpx" />
     <None Include="20150405.gpx" />
     <None Include="02b - MonteFaie.gpx" />
+    <None Include="Script.py" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">12</MinimumVisualStudioVersion>

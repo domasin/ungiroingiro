@@ -58,15 +58,13 @@ let distance_2d (lat1, lon1, _) (lat2, lon2, _) =
 let distance_3d loc1 loc2 = distance loc1 loc2 false
 
 let length _3d locations = 
-    match locations with
-    | loc1::loc2::_ -> 
-        if _3d then 
-            locations 
-            |> List.fold (fun x _ -> (distance_3d loc1 loc2) + x) 0.
-        else 
-            locations 
-            |> List.fold (fun x _ -> (distance_2d loc1 loc2) + x) 0.
-    | _ -> 0.
+    let rec len distFunc acc locations = 
+        match locations with
+        | loc1::loc2::x -> 
+            let acc = (distFunc loc1 loc2) + acc
+            len distFunc acc (loc2::x )
+        | _ -> acc
+    locations |> len (if _3d then distance_3d else distance_2d) 0.
 
 //let test = 
 //    [
