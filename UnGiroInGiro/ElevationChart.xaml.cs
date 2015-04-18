@@ -1,11 +1,14 @@
-﻿using System;
+﻿using GpxFS;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Devices.Sensors;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -89,7 +92,7 @@ namespace UnGiroInGiro
                 prevElev = sale;
                 int diff_Max_Min = max - sale;
                 double yPoint = ((double)diff_Max_Min) * Scale;
-                double xPoint = (i * 100) / ((double)(points.Length - 1));
+                double xPoint = (i * 200) / ((double)(points.Length - 1));
                 points[i] = new Point(xPoint, yPoint);
                 pointData.Add(points[i]);
             }
@@ -108,29 +111,82 @@ namespace UnGiroInGiro
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             gpxLdr = (GpxFS.GpxLoader)e.Parameter;
-            
+            List<GpxTrack> tracks = gpxLdr.GetTracks();
+            GpxPoint startPoint = tracks[0].Segs[0];
+            double startLat = startPoint.Latitude;
+            double startLon = startPoint.Longitude;
+
+            foreach (GpxPoint p in tracks[0].Segs)
+            {
+                double lat = p.Latitude;
+                double lon = p.Longitude;
+                int distance = System.Convert.ToInt32(Geo.distance(lat, lon, 0, startLat, startLon, 0, false));
+                if(!elevations.ContainsKey(distance))
+                    elevations.Add(distance, System.Convert.ToInt32(p.Elevation));
+            }
         }
+
+        private SimpleOrientationSensor _simpleorientation; 
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             GenerateGridLines(linegraphCanvas.Width, linegraphCanvas.Height, 5, 5);
-            elevations.Add(0, 10);
-            elevations.Add(20, 500);
-            elevations.Add(30, 600);
-            elevations.Add(40, 610);
-            elevations.Add(50, 630);
-            elevations.Add(100, 700);
-            elevations.Add(200, 1000);
-            elevations.Add(300, 1300);
-            elevations.Add(380, 2000);
+
+            _simpleorientation = SimpleOrientationSensor.GetDefault();
+            // Assign an event handler for the sensor orientation-changed event 
+            if (_simpleorientation != null)
+            {
+                _simpleorientation.OrientationChanged += new TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs>(OrientationChanged);
+            } 
         }
+
+        private async void OrientationChanged(object sender, SimpleOrientationSensorOrientationChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                SimpleOrientation orientation = e.Orientation;
+                switch (orientation)
+                {
+                    case SimpleOrientation.NotRotated:
+                        //Portrait Up 
+                        txtOrientation.Text = "Not Rotated";
+                        break;
+                    case SimpleOrientation.Rotated90DegreesCounterclockwise:
+                        //LandscapeLeft 
+                        txtOrientation.Text = "Rotated 90 Degrees Counterclockwise";
+                        
+                        break;
+                    case SimpleOrientation.Rotated180DegreesCounterclockwise:
+                        //PortraitDown 
+                        txtOrientation.Text = "Rotated 180 Degrees Counterclockwise";
+                        
+                        break;
+                    case SimpleOrientation.Rotated270DegreesCounterclockwise:
+                        //LandscapeRight 
+                        txtOrientation.Text = "Rotated 270 Degrees Counterclockwise";
+                        linegraphCanvas.Width = 1000;
+                        break;
+                    case SimpleOrientation.Faceup:
+                        txtOrientation.Text = "Faceup";
+                        break;
+                    case SimpleOrientation.Facedown:
+                        txtOrientation.Text = "Facedown";
+                        break;
+                    default:
+                        txtOrientation.Text = "Unknown orientation";
+                        break;
+                }
+            });
+        } 
 
         Dictionary<int, int> elevations = new Dictionary<int, int>();
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Point[] graphPoints = new Point[380];
-            DrawLineChart(graphPoints, 0, 2000);
+            DrawLineChart(graphPoints, 409, 1300);
         }
+
+
     }
 }

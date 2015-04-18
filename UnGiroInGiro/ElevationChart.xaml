@@ -11,12 +11,17 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded"
     >
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Accept" Label="appbarbutton" Click="Button_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 
     <Grid>
-        <Canvas x:Name="linegraphCanvas" Background="Azure" Margin="0,71,37,378" HorizontalAlignment="Right" Width="353" Height="200">
+        <Canvas x:Name="linegraphCanvas" Background="Azure" Margin="0,0,0,0" Height="400"  HorizontalAlignment="Right" Width="400" VerticalAlignment="Bottom">
             <Line X1="0" Y1="99.75" X2="100" Y2="99.75" Stroke="Yellow" StrokeThickness="0.5" />
             <Line X1="0" Y1="0" X2="0" Y2="100" Stroke="Yellow" StrokeThickness="0.5" />
         </Canvas>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="38,299,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <TextBox x:Name="txtOrientation" HorizontalAlignment="Left" Margin="81,180,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
     </Grid>
 </Page>
