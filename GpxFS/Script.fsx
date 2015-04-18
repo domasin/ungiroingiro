@@ -10,7 +10,7 @@ open GpxFS.Geo
 open System.IO
 
 let totalLength = 
-    use sr = new StreamReader (__SOURCE_DIRECTORY__ + "\\02b - MonteFaie.gpx")
+    use sr = new StreamReader (__SOURCE_DIRECTORY__ + "\\20150412-2.gpx")
     sr.ReadToEnd()
     |> gpxTracks
     |> List.map (fun (_, locations) -> locations |> List.map (fun (lat,lon,ele,_) -> (lat,lon,ele)))

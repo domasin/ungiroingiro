@@ -13,6 +13,7 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Load Track" Click="LoadTrack_Click"/>
                 <AppBarButton Label="Save Track" Click="SaveTrackButton_Click"/>
+                <AppBarButton Label="Elevation Chart" Click="ElevationChart_Click"/>
             </CommandBar.SecondaryCommands>
             <AppBarButton Icon="MapPin"  Label="Position" Click="AddCurrentPosition_Click" />
             <AppBarButton Name="TrackLocationButton" Icon="Play" Label="Start Track" Click="TrackLocation_Click"/>
