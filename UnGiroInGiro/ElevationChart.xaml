@@ -4,24 +4,19 @@
     xmlns:local="using:UnGiroInGiro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    
-    
-    
+    xmlns:Charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
     x:Class="UnGiroInGiro.ElevationChart"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded"
     >
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Icon="Accept" Label="appbarbutton" Click="Button_Click"/>
+            <AppBarButton Icon="Refresh"  Label="Refresh" Click="ButtonRefresh_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
-
     <Grid>
-        <Canvas x:Name="linegraphCanvas" Background="Azure" Margin="0,0,0,0" Height="400"  HorizontalAlignment="Right" Width="400" VerticalAlignment="Bottom">
-            <Line X1="0" Y1="99.75" X2="100" Y2="99.75" Stroke="Yellow" StrokeThickness="0.5" />
-            <Line X1="0" Y1="0" X2="0" Y2="100" Stroke="Yellow" StrokeThickness="0.5" />
-        </Canvas>
-        <TextBox x:Name="txtOrientation" HorizontalAlignment="Left" Margin="81,180,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
+        <Charting:Chart x:Name="LineChart" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Width="700" Height="400">
+            <Charting:LineSeries Title="Elevation" Margin="0" IndependentValuePath="Meter" DependentValuePath="Elevation" IsSelectionEnabled="True"/>
+        </Charting:Chart>
     </Grid>
 </Page>
