@@ -39,21 +39,26 @@ let gpxTracks content =
         (fun trk -> 
             (let name = trk.Element(gpxNameSpace + "name")
              if name <> null then name.Value else ""), 
-            trk.Descendants(gpxNameSpace + "trkpt")
+            trk.Descendants(gpxNameSpace + "trkseg")
             |> Seq.map 
-                (fun trkpt -> 
-                    (trkpt.Attribute(XName.Get("lat")).Value |> double),
-                    (trkpt.Attribute(XName.Get("lon")).Value |> double), 
-                    (   
-                        let ele = trkpt.Element(gpxNameSpace + "ele")
-                        if ele <> null then ele.Value |> double else Double.NaN
-                    ), 
-                    (   
-                        let time = trkpt.Element(gpxNameSpace + "time")
-                        if time <> null then DateTime.Parse(time.Value) else DateTime.MinValue
-                    )
+                (fun trkseg -> 
+                    trk.Descendants(gpxNameSpace + "trkpt")
+                    |> Seq.map 
+                        (fun trkpt -> 
+                            (trkpt.Attribute(XName.Get("lat")).Value |> double),
+                            (trkpt.Attribute(XName.Get("lon")).Value |> double), 
+                            (   
+                                let ele = trkpt.Element(gpxNameSpace + "ele")
+                                if ele <> null then ele.Value |> double else Double.NaN
+                            ), 
+                            (   
+                                let time = trkpt.Element(gpxNameSpace + "time")
+                                if time <> null then DateTime.Parse(time.Value) else DateTime.MinValue
+                            )
+                        )
+                    |> Seq.toList 
                 )
-            |> Seq.toList
+                |> Seq.toList 
         )
     |> Seq.toList
 

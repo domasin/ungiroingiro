@@ -11,7 +11,7 @@
     >
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Icon="Refresh"  Label="Refresh" Click="ButtonRefresh_Click"/>
+            <AppBarButton Icon="Back"  Label="Back to Map" Click="ButtonRefresh_Click"/>
         </CommandBar>
     </Page.BottomAppBar>
     <Grid>

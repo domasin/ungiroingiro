@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Shapes;
 using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 using GpxFS;
 using GpxFS.GpxXml;
+using Windows.Graphics.Display;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -67,30 +68,34 @@ namespace UnGiroInGiro
         void Page_Loaded(object sender, RoutedEventArgs e)
         {
             LoadChartContents();
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
         }
 
         private void LoadChartContents()
         {
-            Random rand = new Random();
             List<ElevationData> elevationsList = new List<ElevationData>();
-            //elevationsList.Add(new ElevationData() { Meter = "MSFT", Elevation = rand.Next(0, 200) });
-            //elevationsList.Add(new ElevationData() { Meter = "AAPL", Elevation = rand.Next(0, 200) });
-            //elevationsList.Add(new ElevationData() { Meter = "GOOG", Elevation = rand.Next(0, 200) });
-            //elevationsList.Add(new ElevationData() { Meter = "BBRY", Elevation = rand.Next(0, 200) });
-            GpxTrack track = gpxLdr.GetTracks()[0];
-            //GpxPoint startPoint = track.Segs[0];
-            //double lat1 = startPoint.Latitude;
-            //double lon1 = startPoint.Longitude;
-            //double elev1 = startPoint.Elevation;
+
+            if (gpxLdr.GetTracks().Count > 0)
+                elevationsList = GetElevationList(gpxLdr.GetTracks()[0].Segs[0].Points);
+            //else if(gpxLdr.GetRoutes().Count > 0)
+            //    elevationsList = GetElevationList(gpxLdr.GetRoutes()[0].Segs);
+
+            (LineChart.Series[0] as LineSeries).ItemsSource = elevationsList;
+        }
+
+        private List<ElevationData> GetElevationList(List<GpxPoint> points)
+        {
+            List<ElevationData> result = new List<ElevationData>();
+
             int prevDistance = -1;
 
             GpxPoint prevPoint = null;
             double distanceSoFar = 0;
             int step = 500;
 
-            foreach (GpxPoint gpt in track.Segs)
+            foreach (GpxPoint gpt in points)
             {
-                if(prevPoint != null)
+                if (prevPoint != null)
                 {
                     double lat1 = prevPoint.Latitude;
                     double lon1 = prevPoint.Longitude;
@@ -103,7 +108,7 @@ namespace UnGiroInGiro
                     int distance = System.Convert.ToInt32(distanceSoFar / step);
                     if (distance > prevDistance)
                     {
-                        elevationsList.Add(new ElevationData() { Meter = (distance * step).ToString(), Elevation = System.Convert.ToInt32(elev) });
+                        result.Add(new ElevationData() { Meter = (distance * step).ToString(), Elevation = System.Convert.ToInt32(elev) });
                         prevDistance = distance;
                     }
                 }
@@ -111,13 +116,13 @@ namespace UnGiroInGiro
                 prevPoint = gpt;
             }
 
-
-            (LineChart.Series[0] as LineSeries).ItemsSource = elevationsList;
+            return result;
         }
 
         private void ButtonRefresh_Click(object sender, RoutedEventArgs e)
         {
-            LoadChartContents();
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            Frame.GoBack();
         }
     }
 }

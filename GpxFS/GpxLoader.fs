@@ -10,9 +10,20 @@ type GpxPoint(lat:double, lon:double, ele:double, time:DateTime) =
     member x.Elevation = ele
     member x.Time = time
 
-type GpxTrack(name:string, segs:(List<GpxPoint>)) = 
+type GpxRtPoint(lat:double, lon:double) = 
+    member x.Latitude = lat
+    member x.Longitude = lon
+
+type GpxSeg(points:(List<GpxPoint>)) = 
+    member x.Points = points
+
+type GpxTrack(name:string, segs:(List<GpxSeg>)) = 
     member x.Name = name
     member x.Segs = segs
+
+type GpxRoute(name:string, rtepts:(List<GpxRtPoint>)) = 
+    member x.Name = name
+    member x.Rtepts = rtepts
 
 type GpxLoader(content) = 
 
@@ -21,10 +32,15 @@ type GpxLoader(content) =
         |> gpxTracks
         |> Seq.map 
             (fun (name,segs) -> 
-                let points = 
+                let segmenti = 
                     segs
-                    |> List.map (fun (lat,lon,ele,time) -> new GpxPoint(lat,lon,ele,time))
-                new GpxTrack(name,points |> ofSeq)
+                    |> List.map (fun seg -> 
+                                    let points = 
+                                        seg
+                                        |> List.map (fun (lat,lon,ele,time) -> new GpxPoint(lat,lon,ele,time))
+                                    new GpxSeg(points |> ofSeq)
+                                )
+                new GpxTrack(name,segmenti |> ofSeq)
             )
         |> ofSeq
 
@@ -32,10 +48,10 @@ type GpxLoader(content) =
         content
         |> gpxRoutes
         |> Seq.map 
-            (fun (name,segs) -> 
+            (fun (name,rtepts) -> 
                 let points = 
-                    segs
-                    |> List.map (fun (lat,lon) -> new GpxPoint(lat,lon,0.,DateTime.MinValue))
-                new GpxTrack(name,points |> ofSeq)
+                    rtepts
+                    |> List.map (fun (lat,lon) -> new GpxRtPoint(lat,lon))
+                new GpxRoute(name,points |> ofSeq)
             )
         |> ofSeq
